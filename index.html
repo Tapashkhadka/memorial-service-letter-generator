@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial Service Letter Generator</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#f5f0e8;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;padding:20px;-webkit-text-size-adjust:100%}
+    .app{max-width:700px;margin:0 auto}
+
+    /* Header */
+    .header{text-align:center;padding:24px 16px;margin-bottom:20px}
+    .header .om{font-size:28px;color:#b05c00;font-family:Georgia,serif}
+    .header h1{font-family:Georgia,serif;font-size:22px;color:#3d2200;font-weight:500;margin:8px 0 4px}
+    .header p{font-size:13px;color:#7a4f1a}
+
+    /* Nav links */
+    .nav{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+    .nav a{font-size:12px;color:#a06020;text-decoration:none;padding:6px 14px;border:1px solid #d4a96a;border-radius:20px;transition:all .2s}
+    .nav a:hover,.nav a.active{background:#b05c00;color:#fff;border-color:#b05c00}
+
+    /* Card */
+    .card{background:#fff;border-radius:10px;padding:24px;margin-bottom:16px;border:0.5px solid #e0d5c5}
+
+    /* Form */
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#a06020;margin-bottom:6px;font-weight:600}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;font-size:14px;font-family:inherit;border:1px solid #d4c5b0;border-radius:6px;background:#fdf6ec;color:#3d2200;outline:none;transition:border .2s}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#b05c00}
+    .form-group textarea{resize:vertical;min-height:70px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+    /* Buttons */
+    .btn{display:block;width:100%;padding:13px;font-family:inherit;font-size:15px;font-weight:600;letter-spacing:.03em;border:none;border-radius:8px;cursor:pointer;transition:background .2s;-webkit-tap-highlight-color:transparent}
+    .btn-primary{background:#b05c00;color:#fff;margin-top:8px}
+    .btn-primary:hover,.btn-primary:active{background:#934d00}
+    .btn-outline{background:transparent;color:#b05c00;border:1.5px solid #b05c00;margin-top:8px}
+    .btn-outline:hover{background:#fdf6ec}
+    .btn-sm{display:inline-block;width:auto;padding:8px 20px;font-size:13px}
+
+    /* Preview */
+    .preview{background:#fff;border-radius:10px;border:0.5px solid #e0d5c5;padding:28px 32px;margin-bottom:16px;font-family:Georgia,serif}
+    .preview h1{font-size:22px;margin-bottom:16px;color:#333}
+    .preview h3{font-size:15px;color:#333;margin:16px 0 8px}
+    .preview p{font-size:14px;line-height:1.7;color:#444;margin:8px 0}
+    .preview table{width:100%;margin:8px 0}
+    .preview td{padding:6px 0;font-size:14px;color:#444}
+    .preview .leave-details{background:#fdf6ec;padding:16px;margin:16px 0;border-left:3px solid #b05c00;border-radius:0 6px 6px 0}
+    .preview .leave-details h3{margin-top:0}
+    .preview ul{margin:8px 0 8px 20px}
+    .preview li{font-size:14px;line-height:1.7;color:#444}
+    .preview .signature-block{margin-top:32px}
+    .preview .signature-block .sig{font-size:20px;font-family:'Brush Script MT','Segoe Script',cursive;color:#3d2200}
+
+    .hidden{display:none}
+    .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+    .deco-line{width:40px;height:1.5px;background:#c97d2a;margin:10px auto}
+    .back-link{display:inline-block;font-size:13px;color:#a06020;text-decoration:none;margin-bottom:16px}
+    .back-link:hover{color:#b05c00}
+
+    /* Funeral Program styles */
+    .fp-wrap{max-width:740px;margin:0 auto}
+    .fp-bifold{display:grid;grid-template-columns:1fr 1fr;border:0.5px solid #ddd;border-radius:8px;overflow:hidden;font-family:Georgia,serif}
+    .fp-panel{padding:1.75rem 1.5rem;min-height:400px}
+    .fp-cover{background:#fdf6ec;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+    .fp-inner{background:#fff;border-left:0.5px solid #eee}
+    .fp-back{background:#fdf6ec;border-left:0.5px solid #eee;display:flex;flex-direction:column;gap:.8rem}
+    .fp-om{font-size:34px;color:#b05c00;line-height:1;font-family:Georgia,serif}
+    .fp-deco{width:36px;height:1.5px;background:#c97d2a;margin:4px auto}
+    .fp-name{font-size:20px;font-weight:500;color:#3d2200;letter-spacing:.01em;font-family:Georgia,serif}
+    .fp-life{font-size:13px;color:#7a4f1a;margin-top:2px}
+    .fp-sub{font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#a06020;margin-bottom:6px}
+    .fp-body{font-size:14px;color:#555;line-height:1.85;font-family:Georgia,serif}
+    .fp-sec{margin-bottom:1.1rem}
+    .fp-divl{border-top:0.5px solid #eee;margin:10px 0}
+    .fp-lotus{font-size:14px;color:#b05c00}
+    .fp-label{font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#a06020;margin-bottom:6px}
+    .fp-detail{font-size:13px;color:#5a3a10;text-align:center;line-height:1.75}
+
+    @page{size:letter;margin:0.5in}
+    @media print{
+      html,body{background:#fff!important;padding:0;margin:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+      .header,.nav,.card,.actions,.back-link,.btn{display:none!important}
+      .preview{border:none;padding:20px;box-shadow:none}
+      .fp-bifold{border:none;border-radius:0}
+      .fp-panel{page-break-inside:avoid}
+      .fp-cover,.fp-back{background:#fdf6ec!important}
+      .fp-inner{background:#fff!important}
+      .fp-om{color:#b05c00!important}
+      .fp-deco{background:#c97d2a!important}
+      .fp-name{color:#3d2200!important}
+      .fp-sub,.fp-label{color:#a06020!important}
+      .fp-body{color:#555!important}
+      .fp-lotus{color:#b05c00!important}
+      .fp-detail{color:#5a3a10!important}
+      #docs-editor-container,div[style*="position: fixed"],div[style*="z-index"]:not(.app){display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important}
+    }
+
+    @media(max-width:600px){
+      body{padding:10px}
+      .card{padding:18px 16px}
+      .form-row{grid-template-columns:1fr}
+      .preview{padding:20px 16px}
+      .header h1{font-size:19px}
+      .actions{flex-direction:column}
+      .btn-sm{width:100%}
+      .fp-bifold{grid-template-columns:1fr}
+      .fp-panel{padding:1.5rem 1.25rem;min-height:auto}
+      .fp-inner,.fp-back{border-left:none;border-top:0.5px solid #eee}
+      .fp-om{font-size:30px}
+      .fp-name{font-size:22px}
+      .fp-life{font-size:14px}
+      .fp-sub,.fp-label{font-size:11px}
+      .fp-body{font-size:15px;line-height:1.9}
+      .fp-detail{font-size:14px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="om">ॐ</div>
+    <h1>Memorial Service Letter Generator</h1>
+    <p>In loving memory of Challi Khadka Ghimiray</p>
+    <div class="deco-line"></div>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav">
+    <a href="#" onclick="showSection('generator')" class="active" id="nav-gen">Letter Generator</a>
+    <a href="#" onclick="showSection('program')" id="nav-prog">Funeral Program</a>
+  </div>
+
+  <!-- GENERATOR SECTION -->
+  <div id="generator">
+    <div class="card">
+      <div class="form-group">
+        <label>Letter Type</label>
+        <select id="letterType" onchange="updateForm()">
+          <option value="workExcuse">Bereavement Leave / Work Excuse</option>
+          <option value="announcement">Service Announcement</option>
+          <option value="thankYou">Thank You Letter</option>
+          <option value="invitation">Service Invitation</option>
+          <option value="donation">Donation Request</option>
+        </select>
+      </div>
+
+      <!-- Work Excuse Fields -->
+      <div id="fields-workExcuse">
+        <p style="font-size:12px;color:#7a4f1a;background:#fdf6ec;padding:10px 14px;border-radius:6px;margin-bottom:16px;line-height:1.6"><strong>How this works:</strong> Enter the name of the person attending the funeral. This letter confirms their attendance so they can show it to their employer. Print or save as PDF.</p>
+
+        <div class="form-group">
+          <label>Full Name of Person Attending the Funeral</label>
+          <input type="text" id="we-attendeeName" placeholder="Enter the attendee's full name">
+        </div>
+      </div>
+
+      <!-- Announcement Fields -->
+      <div id="fields-announcement" class="hidden">
+        <div class="form-group">
+          <label>Deceased Name</label>
+          <input type="text" id="ann-deceasedName" value="Challi Khadka Ghimiray">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Passing</label>
+            <input type="date" id="ann-dateOfDeath" value="2026-04-07">
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="text" id="ann-age" value="55">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Brief Bio / Memory</label>
+          <textarea id="ann-bio" placeholder="A few words about their life..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Service Date</label>
+            <input type="date" id="ann-serviceDate" value="2026-04-09">
+          </div>
+          <div class="form-group">
+            <label>Service Time</label>
+            <input type="text" id="ann-serviceTime" value="10:00 AM – 12:00 PM">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="ann-location" value="Charles F. Snyder Funeral Homes">
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" id="ann-address" value="2421 Willow Street Pike, Willow Street, PA 17584">
+        </div>
+        <div class="form-group">
+          <label>Your Name / Family Name</label>
+          <input type="text" id="ann-senderName" placeholder="e.g. The Khadka Family">
+        </div>
+      </div>
+
+      <!-- Thank You Fields -->
+      <div id="fields-thankYou" class="hidden">
+        <div class="form-group">
+          <label>Deceased Name</label>
+          <input type="text" id="ty-deceasedName" value="Challi Khadka Ghimiray">
+        </div>
+        <div class="form-group">
+          <label>Recipient Name</label>
+          <input type="text" id="ty-recipientName" placeholder="e.g. Friends and Family">
+        </div>
+        <div class="form-group">
+          <label>Specific Gift (optional)</label>
+          <input type="text" id="ty-specificGift" placeholder="e.g. flowers, food, donation">
+        </div>
+        <div class="form-group">
+          <label>Your Name / Family Name</label>
+          <input type="text" id="ty-senderName" placeholder="e.g. The Khadka Family">
+        </div>
+      </div>
+
+      <!-- Invitation Fields -->
+      <div id="fields-invitation" class="hidden">
+        <div class="form-group">
+          <label>Deceased Name</label>
+          <input type="text" id="inv-deceasedName" value="Challi Khadka Ghimiray">
+        </div>
+        <div class="form-group">
+          <label>Service Type</label>
+          <input type="text" id="inv-serviceType" value="Hindu Funeral Service">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Service Date</label>
+            <input type="date" id="inv-serviceDate" value="2026-04-09">
+          </div>
+          <div class="form-group">
+            <label>Service Time</label>
+            <input type="text" id="inv-serviceTime" value="10:00 AM – 12:00 PM">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="inv-location" value="Charles F. Snyder Funeral Homes">
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" id="inv-address" value="2421 Willow Street Pike, Willow Street, PA 17584">
+        </div>
+        <div class="form-group">
+          <label>Special Requests (optional)</label>
+          <textarea id="inv-specialRequests" placeholder="e.g. White or muted attire appreciated...">White or muted attire is respectfully appreciated. Marigold flowers are welcome. Please refrain from bringing meat or alcohol.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Your Name / Family Name</label>
+          <input type="text" id="inv-senderName" placeholder="e.g. The Khadka Family">
+        </div>
+      </div>
+
+      <!-- Donation Fields -->
+      <div id="fields-donation" class="hidden">
+        <div class="form-group">
+          <label>Deceased Name</label>
+          <input type="text" id="don-deceasedName" value="Challi Khadka Ghimiray">
+        </div>
+        <div class="form-group">
+          <label>Charity / Organization Name</label>
+          <input type="text" id="don-charityName" placeholder="e.g. Local Hindu Temple Fund">
+        </div>
+        <div class="form-group">
+          <label>Description (optional)</label>
+          <textarea id="don-charityDescription" placeholder="About the organization..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Donation Instructions (optional)</label>
+          <input type="text" id="don-donationInstructions" placeholder="e.g. Make checks payable to...">
+        </div>
+        <div class="form-group">
+          <label>Your Name / Family Name</label>
+          <input type="text" id="don-senderName" placeholder="e.g. The Khadka Family">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="generate()">Generate Letter</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW SECTION -->
+  <div id="preview-section" class="hidden">
+    <a href="#" class="back-link" onclick="showSection('generator')">&larr; Back to form</a>
+    <div class="preview" id="preview-content"></div>
+    <div class="actions">
+      <button class="btn btn-primary btn-sm" onclick="window.print()">Print / Save as PDF</button>
+      <button class="btn btn-outline btn-sm" onclick="showSection('generator')">Edit</button>
+    </div>
+  </div>
+
+  <!-- FUNERAL PROGRAM SECTION -->
+  <div id="program" class="hidden">
+    <div class="fp-wrap">
+      <div class="fp-bifold">
+
+        <div class="fp-panel fp-cover">
+          <div class="fp-om">&#x0950;</div>
+          <div>
+            <p class="fp-label">In loving memory of</p>
+            <p class="fp-name">Challi Khadka Ghimiray</p>
+            <div class="fp-deco"></div>
+            <p class="fp-life">January 1, 1971 &mdash; April 7, 2026</p>
+          </div>
+          <span class="fp-lotus">&#x275B;</span>
+          <div style="margin-top:auto;width:100%">
+            <div class="fp-divl"></div>
+            <p class="fp-label" style="text-align:center;letter-spacing:.08em;margin-bottom:4px">Funeral service</p>
+            <p class="fp-detail">Thursday, April 9, 2026<br>10:00 AM &ndash; 12:00 PM<br>Charles F. Snyder Funeral Homes<br>2421 Willow Street Pike, Willow Street, PA 17584</p>
+            <div class="fp-divl"></div>
+            <p class="fp-label" style="text-align:center;letter-spacing:.08em;margin-bottom:4px">Hindu rituals at residence</p>
+            <p class="fp-detail">319 Devon Dr., Lancaster, PA 17603</p>
+          </div>
+        </div>
+
+        <div class="fp-panel fp-inner">
+          <div class="fp-sec">
+            <p class="fp-sub">Obituary</p>
+            <p class="fp-body">Challi Khadka Ghimiray was born on January 1, 1971, and passed peacefully on April 7, 2026, at the age of 55.</p>
+            <br>
+            <p class="fp-body" style="font-style:italic;color:#5a3a10">She was truly the heart of our family &mdash; so full of love, strength, and kindness. The way she cared for everyone and the warmth she brought into our lives will never be forgotten.</p>
+            <br>
+            <p class="fp-body">Though our hearts are heavy, we find comfort knowing she is now at peace.</p>
+          </div>
+          <div class="fp-divl"></div>
+          <div class="fp-sec">
+            <p class="fp-sub">Mourning period (Terahvin)</p>
+            <p class="fp-body">As is customary, prayers and rites will continue at the family residence for 13 days. The family welcomes visitors at:<br><br>319 Devon Dr., Lancaster, PA 17603</p>
+          </div>
+        </div>
+
+        <div class="fp-panel fp-inner">
+          <div class="fp-sec">
+            <p class="fp-sub">Acknowledgements</p>
+            <p class="fp-body">The family of Challi Khadka Ghimiray is deeply grateful for the outpouring of love, prayers, and support during this difficult time. We kindly ask that you continue to keep our family in your thoughts and prayers.<br><br>Special thanks to Charles F. Snyder Funeral Homes and all who have assisted in these arrangements.</p>
+          </div>
+          <div class="fp-divl"></div>
+          <div class="fp-sec">
+            <p class="fp-sub">A note for guests</p>
+            <p class="fp-body">White or muted attire is respectfully appreciated. Marigold flowers are welcome. Please refrain from bringing meat or alcohol.</p>
+          </div>
+        </div>
+
+        <div class="fp-panel fp-back" style="justify-content:center;align-items:center;text-align:center">
+          <div style="width:100%">
+            <div class="fp-om" style="margin-bottom:16px">&#x0950;</div>
+            <p style="font-size:13px;font-style:italic;color:#7a4f1a;line-height:2;font-family:Georgia,serif">&#x0950; &#x0936;&#x093E;&#x0928;&#x094D;&#x0924;&#x093F;&#x0903; &#x0936;&#x093E;&#x0928;&#x094D;&#x0924;&#x093F;&#x0903; &#x0936;&#x093E;&#x0928;&#x094D;&#x0924;&#x093F;&#x0903;<br><span style="font-size:11px;color:#a06020">Om Shanti Shanti Shanti</span></p>
+            <div class="fp-deco" style="margin:14px auto"></div>
+            <p style="font-size:12px;color:#a06020;line-height:1.9;font-style:italic;font-family:Georgia,serif">May her soul rest in eternal peace.<br>She will live on in our hearts forever.</p>
+            <div style="margin-top:20px"><span class="fp-lotus">&#x275B; &#x275B; &#x275B;</span></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary btn-sm" onclick="window.print()">Print / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function fmtDate(str) {
+  if (!str) return '';
+  var d = new Date(str + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+var today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+function updateForm() {
+  var type = val('letterType');
+  var types = ['workExcuse','announcement','thankYou','invitation','donation'];
+  types.forEach(function(t) {
+    document.getElementById('fields-' + t).classList.toggle('hidden', t !== type);
+  });
+}
+
+function showSection(section) {
+  var sections = ['generator','preview-section','program'];
+  sections.forEach(function(s) {
+    document.getElementById(s).classList.add('hidden');
+  });
+  document.getElementById(section).classList.remove('hidden');
+
+  document.getElementById('nav-gen').classList.toggle('active', section === 'generator' || section === 'preview-section');
+  document.getElementById('nav-prog').classList.toggle('active', section === 'program');
+  window.scrollTo(0, 0);
+}
+
+function generate() {
+  var type = val('letterType');
+  var html = '';
+
+  if (type === 'workExcuse') {
+    html = generateWorkExcuse();
+  } else if (type === 'announcement') {
+    html = generateAnnouncement();
+  } else if (type === 'thankYou') {
+    html = generateThankYou();
+  } else if (type === 'invitation') {
+    html = generateInvitation();
+  } else if (type === 'donation') {
+    html = generateDonation();
+  }
+
+  document.getElementById('preview-content').innerHTML = html;
+  document.getElementById('generator').classList.add('hidden');
+  document.getElementById('preview-section').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function backToForm() {
+  showSection('generator');
+}
+
+function generateWorkExcuse() {
+  var attendee = val('we-attendeeName') || '[Attendee Name]';
+
+  return '<h1 style="font-size:22px;color:#333;border-bottom:2px solid #333;padding-bottom:14px;margin-bottom:20px">Funeral Attendance Confirmation</h1>'
+    + '<p style="color:#666;font-size:13px;margin-bottom:20px">Date: ' + today + '</p>'
+    + '<p>To Whom It May Concern,</p>'
+    + '<p>This letter is to confirm that <strong>' + attendee + '</strong> attended the funeral service of <strong>Challi Khadka Ghimiray</strong>, who passed away on April 7, 2026, at the age of 55.</p>'
+    + '<div class="leave-details"><h3 style="margin-top:0;font-size:15px">Funeral Service Details</h3>'
+    + '<table>'
+    + '<tr><td style="width:40%"><strong>Service Date:</strong></td><td>Thursday, April 9, 2026</td></tr>'
+    + '<tr><td><strong>Time:</strong></td><td>10:00 AM &ndash; 12:00 PM</td></tr>'
+    + '<tr><td><strong>Location:</strong></td><td>Charles F. Snyder Funeral Homes</td></tr>'
+    + '<tr><td><strong>Address:</strong></td><td>2421 Willow Street Pike, Willow Street, PA 17584</td></tr>'
+    + '<tr><td><strong>Date of Absence:</strong></td><td>Wednesday, April 9, 2026</td></tr>'
+    + '<tr><td><strong>Expected Return:</strong></td><td>Thursday, April 10, 2026</td></tr>'
+    + '</table></div>'
+    + '<p>' + attendee + ' was present at the funeral service to pay respects and support the family during this difficult time. We kindly request that their employer excuse their absence from work on this date.</p>'
+    + '<p>Should you require any additional verification or documentation, please do not hesitate to contact us at the number provided below.</p>'
+    + '<p>Thank you for your understanding.</p>'
+    + '<p style="margin-top:28px">Sincerely,</p>'
+    + '<div class="signature-block">'
+    + '<p class="sig">Tapash Khadka</p>'
+    + '<p style="color:#666;font-size:13px">Nephew of the deceased</p>'
+    + '<p style="color:#666;font-size:13px">On behalf of the Khadka Ghimiray Family</p>'
+    + '<p style="color:#666;font-size:13px">Contact: 717-300-8215</p>'
+    + '</div>'
+    + '<div style="margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:12px;color:#888;text-align:center">'
+    + '<p>This letter is issued by the family of the deceased to confirm funeral attendance.</p>'
+    + '<p>For verification, contact Tapash Khadka &mdash; 717-300-8215</p>'
+    + '</div>';
+}
+
+function generateAnnouncement() {
+  return '<h1 style="font-size:22px;color:#333;text-align:center">Memorial Service Announcement</h1>'
+    + '<p style="text-align:center;color:#666;margin:12px 0 20px">' + today + '</p>'
+    + '<p>Dear Friends and Family,</p>'
+    + '<p>It is with heavy hearts that we announce the passing of <strong>' + val('ann-deceasedName') + '</strong>, who left us on <strong>' + fmtDate(val('ann-dateOfDeath')) + '</strong>' + (val('ann-age') ? ' at the age of ' + val('ann-age') : '') + '.</p>'
+    + (val('ann-bio') ? '<p>' + val('ann-bio') + '</p>' : '')
+    + '<h3>Memorial Service Details</h3>'
+    + '<p><strong>Date:</strong> ' + fmtDate(val('ann-serviceDate')) + '</p>'
+    + '<p><strong>Time:</strong> ' + val('ann-serviceTime') + '</p>'
+    + '<p><strong>Location:</strong> ' + val('ann-location') + '</p>'
+    + (val('ann-address') ? '<p><strong>Address:</strong> ' + val('ann-address') + '</p>' : '')
+    + '<p style="margin-top:20px">With love and remembrance,</p>'
+    + '<div class="signature-block"><p class="sig">' + (val('ann-senderName') || 'The Family') + '</p></div>';
+}
+
+function generateThankYou() {
+  return '<h1 style="font-size:22px;color:#333;text-align:center">Thank You</h1>'
+    + '<p style="text-align:center;color:#666;margin:12px 0 20px">' + today + '</p>'
+    + '<p>Dear ' + (val('ty-recipientName') || 'Friends and Family') + ',</p>'
+    + '<p>We would like to express our sincere gratitude for your kindness and support during this difficult time following the loss of our beloved <strong>' + val('ty-deceasedName') + '</strong>.</p>'
+    + (val('ty-specificGift') ? '<p>Your thoughtful gift of ' + val('ty-specificGift') + ' meant so much to us.</p>' : '')
+    + '<p>Your condolences, prayers, and presence have been a great comfort to our family. We are deeply touched by your thoughtfulness and care.</p>'
+    + '<p style="margin-top:20px">With heartfelt appreciation,</p>'
+    + '<div class="signature-block"><p class="sig">' + (val('ty-senderName') || 'The Family') + '</p></div>';
+}
+
+function generateInvitation() {
+  return '<p style="text-align:center;font-size:15px;color:#555;margin-bottom:8px">You are cordially invited to join us in celebrating the life of</p>'
+    + '<h1 style="font-size:24px;color:#333;text-align:center;margin-bottom:4px">' + val('inv-deceasedName') + '</h1>'
+    + '<p style="text-align:center;color:#a06020;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px">' + (val('inv-serviceType') || 'Memorial Service') + '</p>'
+    + '<div style="text-align:center;margin:20px 0"><p><strong>Date:</strong> ' + fmtDate(val('inv-serviceDate')) + '</p>'
+    + '<p><strong>Time:</strong> ' + val('inv-serviceTime') + '</p>'
+    + '<p><strong>Location:</strong> ' + val('inv-location') + '</p>'
+    + (val('inv-address') ? '<p>' + val('inv-address') + '</p>' : '') + '</div>'
+    + (val('inv-specialRequests') ? '<p style="text-align:center;font-style:italic;color:#7a4f1a;margin:16px 0">' + val('inv-specialRequests') + '</p>' : '')
+    + '<p style="text-align:center;margin-top:20px">We hope you can join us in honoring and remembering ' + val('inv-deceasedName') + '.</p>'
+    + '<div class="signature-block" style="text-align:center"><p class="sig">' + (val('inv-senderName') || 'The Family') + '</p></div>';
+}
+
+function generateDonation() {
+  return '<h1 style="font-size:22px;color:#333;text-align:center">In Memory of ' + val('don-deceasedName') + '</h1>'
+    + '<p style="text-align:center;color:#666;margin:12px 0 20px">' + today + '</p>'
+    + '<p>Dear Friends and Family,</p>'
+    + '<p>As we mourn the loss of <strong>' + val('don-deceasedName') + '</strong>, we would like to honor their memory by supporting a cause that was dear to their heart.</p>'
+    + (val('don-charityDescription') ? '<p>' + val('don-charityDescription') + '</p>' : '')
+    + '<h3>Donation Information</h3>'
+    + '<p><strong>Charity/Organization:</strong> ' + val('don-charityName') + '</p>'
+    + (val('don-donationInstructions') ? '<p><strong>Instructions:</strong> ' + val('don-donationInstructions') + '</p>' : '')
+    + '<p style="margin-top:16px">Your donation in ' + val('don-deceasedName') + '\'s memory would mean a great deal to our family.</p>'
+    + '<p>Thank you for considering this request.</p>'
+    + '<div class="signature-block"><p class="sig">' + (val('don-senderName') || 'The Family') + '</p></div>';
+}
+</script>
+
+<script>
+window.addEventListener('load', function() {
+  var els = document.querySelectorAll('div');
+  for (var i = 0; i < els.length; i++) {
+    if (els[i].textContent.indexOf('Google Apps Script') !== -1 && !els[i].closest('.app')) {
+      els[i].style.display = 'none';
+    }
+  }
+});
+</script>
+</body>
+</html>
